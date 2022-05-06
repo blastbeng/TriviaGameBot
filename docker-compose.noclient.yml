@@ -1,0 +1,15 @@
+---
+version: "3.3"
+services:
+  trivia-game-api:
+    container_name: trivia-game-api
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    image: "trivia-game-api:latest"
+    restart: always
+    volumes:
+      - "/tmp/TriviaGame:/tmp/TriviaGame"
+    ports:
+      - 5082:5082

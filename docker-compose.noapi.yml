@@ -1,0 +1,13 @@
+---
+version: "3.3"
+services:
+  trivia-game-discord:
+    container_name: trivia-game-discord
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    image: "trivia-game-discord:latest"
+    restart: always
+    volumes:
+      - "/tmp/TriviaGame:/tmp/TriviaGame"

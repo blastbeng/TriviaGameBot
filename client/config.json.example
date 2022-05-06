@@ -1,0 +1,8 @@
+{
+    "BOT_TOKEN" : "BOT_TOKEN",
+    "BOT_ID" : "BOT_ID",
+    "API_HOSTNAME"   : "YOURIP",
+    "TRIVIA_API_URL"   : "http://YOURIP:5081",
+    "TRIVIA_API_PORT"   : 5081,
+    "CACHE_DIR" : "/tmp/TriviaGame"
+}
