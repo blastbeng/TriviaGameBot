@@ -263,10 +263,20 @@ module.exports = {
                             .setColor('#0099ff')
                             .setTitle("Quiz Ended!") 
                             .setDescription("Here are the results of the quiz"); 
-
+                            
+                            var first = "";
+                            var second = "";
                             for (var key in object) {
                                 if (object.hasOwnProperty(key)) { 
-                                    endingEmbed.addField(key, object[key]+"", false)
+                                    if ( first === "" ) {
+                                        first = key + " " + object[key];
+                                        second = "";
+                                    } else {
+                                        second = key + " " + object[key];
+                                        endingEmbed.addField(first, second, false)
+                                        first = "";
+                                        second = "";
+                                    }
                                 }
                             }
 
