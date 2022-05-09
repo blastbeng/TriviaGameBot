@@ -1,0 +1,96 @@
+<section class="container d-none" id="settings">
+    <div class="row justify-content-between mx-0">
+        <div class="col-md-6 order-2 order-md-0 bg-white rounded h-100 p-3">
+            <h1 class="text-center">Settings</h1>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="rounds">Questions amount</label>
+                <select class="form-select" id="rounds">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="time">Seconds per question</label>
+                <select class="form-select" id="time">
+                    <option value="5">5</option>
+                    <option value="10">5</option>
+                    <option value="15">5</option>
+                    <option value="20">5</option>
+                    <option value="25">5</option>
+                    <option value="30" selected>30</option>
+                    <option value="40">50</option>
+                    <option value="50">50</option>
+                    <option value="60">60</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="category">Category</label>
+                <select class="form-select" id="category">
+                    <option value="9">General Knowledge</option>
+                    <option value="10">Entertainment: Books</option>
+                    <option value="11">Entertainment: Film</option>
+                    <option value="12">Entertainment: Music</option>
+                    <option value="13">Entertainment: Musicals & Theatres</option>
+                    <option value="any" selected>Any Category</option>
+                    <option value="14">Entertainment: Television</option>
+                    <option value="15">Entertainment: Video Games</option>
+                    <option value="16">Entertainment: Board Games</option>
+                    <option value="17">Science & Nature</option>
+                    <option value="18">Science: Computers</option>
+                    <option value="19">Science: Mathematics</option>
+                    <option value="20">Mythology</option>
+                    <option value="21">Sports</option>
+                    <option value="22">Geography</option>
+                    <option value="23">History</option>
+                    <option value="24">Politics</option>
+                    <option value="25">Art</option>
+                    <option value="26">Celebrities</option>
+                    <option value="27">Animals</option>
+                    <option value="28">Vehicles</option>
+                    <option value="29">Entertainment: Comics</option>
+                    <option value="30">Science: Gadgets</option>
+                    <option value="31">Entertainment: Japanese Anime & Manga</option>
+                    <option value="32">Entertainment: Cartoon & Animations</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="difficulty">Difficulty</label>
+                <select class="form-select" id="difficulty">
+                    <option value="any" selected>Any Difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="type">Type</label>
+                <select class="form-select" id="type">
+                    <option value="any" selected>Any Type</option>
+                    <option value="multiple">Multiple Choice</option>
+                    <option value="boolean">True / False</option>
+                </select>
+            </div>
+            <button class="btn btn-primary w-100" id="startGame">Start Game</button>
+        </div>
+        <div class="col-md-6 text-white h-100 p-3">
+            <h1 class="text-center">Players</h1>
+            <div class="row mt-4 mx-0" style="height: 20em; overflow-y: auto;" id="playersDiv"></div>
+        </div>
+    </div>
+    <div class="mt-5">
+        <h1 class="text-white text-center">Invite your friends!</h1>
+        <div class="input-group mb-3">
+            <input type="text" id="gameLink" class="form-control text-center fw-bold bg-white"
+                value="http://localhost:3000/" readonly>
+            <button class="btn btn-warning" type="button" id="copy">Copy Link</button>
+        </div>
+    </div>
+</section>

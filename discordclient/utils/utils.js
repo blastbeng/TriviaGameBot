@@ -264,28 +264,29 @@ module.exports = {
                             .setTitle("Quiz Ended!") 
                             .setDescription("Here are the results of the quiz"); 
                             
-                            var first = "";
-                            var second = "";
+                            
+
+                            var i = 0;
                             for (var key in object) {
-                                if (object.hasOwnProperty(key)) { 
-                                    if ( first === "" ) {
-                                        first = key + " " + object[key];
-                                        second = "";
-                                    } else {
-                                        second = key + " " + object[key];
-                                        endingEmbed.addField(first, second, false)
-                                        first = "";
-                                        second = "";
-                                    }
-                                }
+                                if ( i == 24 ) break;
+                                endingEmbed.addField(key + " " + object[key], '\u200B', false)
+                                i++;
                             }
+                            
+                            var rowUserResults = new MessageActionRow();
+                            rowUserResults.addComponents(
+                                new MessageButton()
+                                    .setCustomId('DisplayResults_'+quizid)
+                                    .setLabel("Display your results")
+                                    .setStyle('PRIMARY'),
+                            );
 
                             endingEmbed.setFooter({ text: "Creato da " + interaction.member.user.username, iconURL: interaction.member.user.displayAvatarURL() });   
 
                             if ( interaction.replied ) {
-                                interaction.editReply({ content: "Quiz ended.", embeds: [endingEmbed], components: [], ephemeral: false }); 
+                                interaction.editReply({ content: "Quiz ended.", embeds: [endingEmbed], components: [rowUserResults], ephemeral: false }); 
                             } else {
-                                interaction.reply({ content: "Quiz ended.", embeds: [endingEmbed], components: [], ephemeral: false });
+                                interaction.reply({ content: "Quiz ended.", embeds: [endingEmbed], components: [rowUserResults], ephemeral: false });
                             }
                 
                             try {
@@ -395,7 +396,7 @@ function displayQuestions(quiz_title, interaction, embed, rowAnswers, quizid, qu
                 }
                 clearInterval(refreshId);
                 timeleft = 0;
-                displayCorrectAnswer(quiz_title, interaction, embed, rowAnswers, quizid, questionNumber, input_timeleft, ended, correctId);
+                waitNextQuestion(quiz_title, interaction, embed, rowAnswers, quizid, questionNumber, input_timeleft, ended, correctId);
 
             } else {
                 embed.setFooter({ text: "Time left: " + (timeleft/1000), iconURL: interaction.member.user.displayAvatarURL() });
@@ -437,7 +438,7 @@ function displayCorrectAnswer(quiz_title, interaction, embed, rowAnswers, quizid
 
 function waitNextQuestion(quiz_title, interaction, embed, rowAnswers, quizid, questionNumber, input_timeleft, ended, correctId) {
     return new Promise((resolve, reject) => {
-        var timeleft = 6000;
+        var timeleft = 11000;
         var refreshId = setInterval(() => {
             timeleft -= 1000;                                        
             if (timeleft < 0) {

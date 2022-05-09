@@ -313,7 +313,7 @@ def get_quiz_results(quiz_id: int, guild_id: int):
     cursor_questions = sqliteConnection.cursor()
     
 
-    sqlite_select_questions_query = """SELECT us.username, is_correct
+    sqlite_select_questions_query = """SELECT us.username, an.is_correct
                                        FROM UserAnswers ua
                                                  JOIN Users us on us.id = ua.user_id
                                                  JOIN Answers an on an.id = ua.answer_id
@@ -327,7 +327,7 @@ def get_quiz_results(quiz_id: int, guild_id: int):
 
     for row in records_questions:
       username =      row[0]
-      is_correct =       row[1]
+      is_correct =    row[1]
 
       if username in result.keys():
         result[username] = result[username] + is_correct
@@ -346,6 +346,96 @@ def get_quiz_results(quiz_id: int, guild_id: int):
   return dict(sorted(result.items(), key=lambda item: item[1]))
 
 
+def get_user_results(quiz_id: int, guild_id: int, user_id: int):
+  result = []
+  try:
+
+    author = None
+    sqliteConnection = sqlite3.connect(TMP_DIR+'trivia.sqlite3')
+    cursor_quiz = sqliteConnection.cursor()
+
+    sqlite_select_quiz_query = """SELECT author from Quiz WHERE id = ? ORDER BY ID DESC"""
+    cursor_quiz.execute(sqlite_select_quiz_query, (quiz_id,))
+    records_quiz = cursor_quiz.fetchall()
+    for row in records_quiz:
+      author = row[0]
+
+    
+    cursor_quiz.close()
+
+    if not author:      
+      if sqliteConnection:
+        sqliteConnection.close()
+      raise Exception("Author not found")
+
+    cursor_questions = sqliteConnection.cursor()
+    
+
+    sqlite_select_questions_query = """SELECT qs.id, an.id, an.is_correct, qs.question, an.answer
+                                       FROM UserAnswers ua
+                                                 JOIN Users us on us.id = ua.user_id
+                                                 JOIN Answers an on an.id = ua.answer_id
+                                                 JOIN Questions qs on qs.id = an.questions_id
+                                       JOIN Quiz qz on qz.id = qs.quiz_id
+                                                 WHERE qz.id = ? and qz.guild_id = ? and us.id = ?
+                                                 ORDER BY us.username, qs.id, an.id"""
+
+    cursor_questions.execute(sqlite_select_questions_query, (quiz_id,guild_id,user_id))
+    records_questions = cursor_questions.fetchall()
+
+    for row in records_questions:
+      qsid =            row[0]
+      anid =            row[1]
+      is_correct_u =    row[2]
+      question =        row[3]
+      answer_u =        row[4]
+
+      
+
+      cursor_answers = sqliteConnection.cursor()
+
+      sqlite_select_answers_query = """SELECT * from Answers WHERE questions_id = ? ORDER BY ID DESC"""
+      cursor_answers.execute(sqlite_select_answers_query, (qsid,))
+      records_answers = cursor_answers.fetchall()
+
+      json_answers_list = []
+
+      for row_answers in records_answers:
+        idanswer =     row_answers[0]
+        answer =       row_answers[1]
+        is_correct =   row_answers[2]
+        
+        answers_data_set = {
+          "id":           idanswer, 
+          "answer":       answer, 
+          "is_correct":   is_correct
+        }
+
+        json_answers_list.append(answers_data_set)
+
+      
+        
+      result_data_Set = {
+        "question_id":     qsid, 
+        "answer_id":       anid, 
+        "is_correct":      is_correct_u,
+        "question":        question,
+        "answer":          answer_u,
+        "all_answers":     json_answers_list
+      }
+
+      result.append(result_data_Set)
+
+      cursor_questions.close()
+
+  except sqlite3.Error as error:
+    print("SQLITE Error: ", error)
+    raise Exception(str(error))
+  finally:
+    if sqliteConnection:
+      sqliteConnection.close()
+
+  return result
 
 
 def save_answer(questionid: int, answerid: int, userid: int, username: str):

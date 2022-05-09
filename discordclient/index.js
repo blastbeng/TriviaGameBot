@@ -14,6 +14,7 @@ const config = require("./config.json");
 const http = require("http");
 const wait = require('node:timers/promises').setTimeout;
 const utils = require("./utils/utils.js");
+const { MessageEmbed } = require('discord.js');
 
 const client = new Client({ intents: new Intents(32767) });
 
@@ -143,6 +144,83 @@ client.on('interactionCreate', async interaction => {
                                 interaction.reply({ content: 'Error', ephemeral: true });
                             }
                              
+                        } catch (error) {
+                            interaction.reply({ content: 'Error', ephemeral: true });
+                            console.error(error);
+                        }
+                        
+                    });
+                
+                });         
+                
+                req.end()
+            } else if (interaction.customId.startsWith('DisplayResults')) {
+
+                const splittedAnswer = interaction.customId.split('_');
+                const quizid = splittedAnswer[1];
+
+                const options = {
+                    "method": "GET",
+                    "hostname": hostname,
+                    "port": port_trivia,
+                    "path": '/user/getresults?quiz_id='+quizid+'&guild_id='+interaction.member.guild.id+'&user_id='+interaction.member.user.id
+                }
+            
+                const req = http.request(options, function(res) {
+                    
+                    req.on('error', function (error) {
+                        console.log(error);
+                        interaction.reply({ content: 'Error', ephemeral: true }); 
+
+                        endAllQuiz(interaction, false)
+                    });
+                    var chunks = [];     
+                
+                    res.on("data", function (chunk) {
+                        chunks.push(chunk);
+                    });
+                
+                    res.on("end", function() {
+                        
+                        var object = JSON.parse(chunks);
+                        var points = 0;
+                        
+                        var endingEmbed = new MessageEmbed()
+
+                        for (var i = 0; i < object.length; i++) {
+                            var results = object[i];
+                            var is_correct = "WRONG:  ";
+                            var correct = "";
+                            if (results.is_correct === 1) {
+                                is_correct = "RIGHT:  ";
+                                points = points + 1;
+                            } else {
+                                for (var z = 0; z < results.all_answers.length; z ++) {
+                                    int_answers = results.all_answers[z];
+                                    if ( int_answers.is_correct === 1 ) {
+                                        correct = ".   CORRECT ONE WAS: " + int_answers.answer
+                                    }
+                                }
+                            }
+                            endingEmbed.addField(results.question, is_correct+"  " + results.answer + correct, false)
+                        }
+
+                        
+
+                        endingEmbed
+                        .setColor('#0099ff')
+                        .setTitle("Your results!") 
+                        .setDescription("You scored " + points + " points."); 
+
+
+                        endingEmbed.setFooter({ text: "Creato da " + interaction.member.user.username, iconURL: interaction.member.user.displayAvatarURL() });   
+
+                        interaction.reply({ content: "Quiz ended.", embeds: [endingEmbed], components: [], ephemeral: true });
+            
+                        try {
+                            if ( this.statusCode === 400 ) {
+                                interaction.reply({ content: 'Error', ephemeral: true });
+                            }
                         } catch (error) {
                             interaction.reply({ content: 'Error', ephemeral: true });
                             console.error(error);

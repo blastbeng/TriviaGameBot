@@ -269,5 +269,31 @@ class UserGetAnswer(Resource):
       abort(400, str(e))
 
 
+
+
+      
+parserusergetresults = reqparse.RequestParser()
+parserusergetresults.add_argument("quiz_id", type=int)
+parserusergetresults.add_argument("guild_id", type=int)
+parserusergetresults.add_argument("user_id", type=int)
+
+@nsuser.route('/getresults')
+class QuizGetResults(Resource):
+  @api.expect(parserusergetresults)
+  @api.response(200, 'Success')
+  @api.response(400, 'Generic Error')
+  def get(self):
+    try:
+      quiz_id = request.args.get("quiz_id")
+      guild_id = request.args.get("guild_id")
+      user_id = request.args.get("user_id")
+      quiz_data = trivia.get_user_results(quiz_id,guild_id,user_id)
+      resp = Response(json.dumps(quiz_data), mimetype='application/json')
+      resp.status_code = 200
+      return resp
+    except Exception as e:
+      abort(400, str(e))
+
+
 if __name__ == '__main__':
   app.run()
